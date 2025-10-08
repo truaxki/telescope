@@ -113,22 +113,79 @@ def format_project_name(name: str) -> str:
 project_name = format_project_name(project_name)
 ```
 
-### Step 5: Construct Output Paths
+### Step 5: Create Reference Structure & Copy Code
 
 ```python
 from pathlib import Path
 from datetime import date
+import shutil
 
-# Base path
-base_path = Path("ai_docs") / "documentation" / project_name
-summaries_path = base_path / "summaries"
+# NEW: Reference structure with code snapshot + documentation
+reference_base = Path("ai_docs") / "reference" / project_name
+code_snapshot_path = reference_base / project_name
+docs_base_path = reference_base / "documentation"
+summaries_path = docs_base_path / "summaries"
 
 # Create directories
-base_path.mkdir(parents=True, exist_ok=True)
+reference_base.mkdir(parents=True, exist_ok=True)
+code_snapshot_path.mkdir(exist_ok=True)
+docs_base_path.mkdir(exist_ok=True)
 summaries_path.mkdir(exist_ok=True)
 
 # Date string for file naming
 date_str = date.today().strftime("%Y-%m-%d")
+```
+
+### Step 6: Copy Code Snapshot
+
+```python
+# Copy source code to reference location
+# This preserves the analyzed code version with the documentation
+
+import shutil
+from pathlib import Path
+
+def copy_code_snapshot(source_path: str, snapshot_path: Path):
+    """Copy source code to reference snapshot."""
+
+    # Patterns to exclude (don't copy these)
+    exclude_patterns = {
+        '.git', '.gitignore',
+        'node_modules', '__pycache__', '.venv', 'venv',
+        '.next', 'dist', 'build', '.cache',
+        '*.pyc', '*.pyo', '*.pyd',
+        '.DS_Store', 'Thumbs.db'
+    }
+
+    def should_exclude(path: str) -> bool:
+        """Check if path should be excluded."""
+        path_parts = Path(path).parts
+        for pattern in exclude_patterns:
+            if pattern in path_parts or Path(path).name == pattern:
+                return True
+        return False
+
+    # Copy entire directory structure
+    for item in Path(source_path).rglob('*'):
+        if should_exclude(str(item)):
+            continue
+
+        # Calculate relative path
+        relative_path = item.relative_to(source_path)
+        dest_path = snapshot_path / relative_path
+
+        # Copy file or create directory
+        if item.is_file():
+            dest_path.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copy2(item, dest_path)
+        elif item.is_dir():
+            dest_path.mkdir(parents=True, exist_ok=True)
+
+    print(f"✅ Code snapshot created at: {snapshot_path}")
+
+
+# Execute the copy
+copy_code_snapshot(target_path, code_snapshot_path)
 ```
 
 ## Output Variables
@@ -137,12 +194,17 @@ date_str = date.today().strftime("%Y-%m-%d")
 
 ```yaml
 target_type: "local_path | github | gitlab | bitbucket"
-target_path: "/absolute/path/to/code"
+target_path: "/absolute/path/to/code"  # Source for analysis
 project_name: "formatted-project-name"
 cleanup_required: true | false
 temp_dir: "/path/to/temp" | null
 original_url: "url" | null  # if remote
-base_output_path: "ai_docs/documentation/{project-name}"
+
+# NEW: Reference structure paths
+reference_base: "ai_docs/reference/{project-name}"
+code_snapshot_path: "ai_docs/reference/{project-name}/{project-name}"  # Code copy
+docs_base_path: "ai_docs/reference/{project-name}/documentation"
+summaries_path: "ai_docs/reference/{project-name}/documentation/summaries"
 date_str: "YYYY-MM-DD"
 ```
 
@@ -155,12 +217,16 @@ date_str: "YYYY-MM-DD"
 
 **Target Type:** {target_type}
 **Source:** {original input from user}
-**Target Path:** {target_path}
+**Analysis Target:** {target_path}
 **Project Name:** {project_name}
 {**Clone Time:** {timestamp} - if remote}
 {**Temp Directory:** {temp_dir} - if remote}
+
+**Reference Structure Created:**
+📁 **Code Snapshot:** {code_snapshot_path}
+📄 **Documentation:** {docs_base_path}
+
 **Cleanup Required:** {cleanup_required}
-**Output Location:** {base_output_path}
 **Ready for Analysis:** ✅
 
 ---

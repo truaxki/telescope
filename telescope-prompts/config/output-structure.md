@@ -5,22 +5,40 @@
 ## Base Directory Structure
 
 ```
-ai_docs/documentation/[project-name]/
-├── README.md                              # Index document (created in Phase 6)
+ai_docs/reference/[project-name]/
 │
-├── summaries/
-│   ├── [DATE]-orchestration.md            # Orchestration plan (Phase 3)
-│   ├── [DATE]-agent-1-architecture.md     # Agent outputs (Phase 4)
-│   ├── [DATE]-agent-2-backend.md
-│   ├── [DATE]-agent-3-frontend.md
-│   ├── [DATE]-agent-4-devops.md
-│   └── [DATE]-agent-5-quality.md
+├── [project-name]/                        # CODE SNAPSHOT (Phase 0)
+│   ├── src/                               # Complete copy of source code
+│   ├── package.json                       # Dependencies preserved
+│   ├── README.md                          # Original project docs
+│   └── [all project files]                # Snapshot at analysis time
 │
-├── [DATE]-master-documentation.md         # Complete synthesis (Phase 5)
-├── [DATE]-pain-points.md                  # Consolidated issues (Phase 5)
-├── [DATE]-recommendations.md              # Actionable improvements (Phase 5)
-└── [DATE]-architecture-diagrams.md        # Visual documentation (Phase 5)
+└── documentation/                         # ANALYSIS DOCUMENTATION
+    ├── README.md                          # Index document (Phase 6)
+    │
+    ├── summaries/
+    │   ├── [DATE]-orchestration.md        # Orchestration plan (Phase 3)
+    │   ├── [DATE]-agent-1-architecture.md # Agent outputs (Phase 4)
+    │   ├── [DATE]-agent-2-backend.md
+    │   ├── [DATE]-agent-3-frontend.md
+    │   ├── [DATE]-agent-4-devops.md
+    │   └── [DATE]-agent-5-quality.md
+    │
+    ├── [DATE]-master-documentation.md     # Complete synthesis (Phase 5)
+    ├── [DATE]-pain-points.md              # Consolidated issues (Phase 5)
+    ├── [DATE]-recommendations.md          # Actionable improvements (Phase 5)
+    └── [DATE]-architecture-diagrams.md    # Visual documentation (Phase 5)
 ```
+
+## Rationale for Combined Structure
+
+**Why keep code AND documentation together:**
+
+1. **Self-Contained Reference** - All context in one place
+2. **Version Snapshot** - Documentation references specific code version
+3. **Time-Travel Capability** - See exactly what was analyzed
+4. **Cross-Reference Links** - Documentation can link to specific files
+5. **Portable Analysis** - Move entire folder as single unit
 
 ## File Naming Convention
 
@@ -338,7 +356,11 @@ class OutputPaths:
     def __init__(self, project_name: str):
         self.project_name = self._format_name(project_name)
         self.date_str = date.today().strftime("%Y-%m-%d")
-        self.base_path = Path("ai_docs") / "documentation" / self.project_name
+
+        # NEW: Reference structure includes code snapshot + documentation
+        self.reference_base = Path("ai_docs") / "reference" / self.project_name
+        self.code_snapshot_path = self.reference_base / self.project_name
+        self.docs_base_path = self.reference_base / "documentation"
 
     @staticmethod
     def _format_name(name: str) -> str:
@@ -346,9 +368,19 @@ class OutputPaths:
         return name.lower().replace(' ', '-').replace('_', '-')
 
     @property
+    def code_snapshot(self) -> Path:
+        """Get code snapshot directory path."""
+        return self.code_snapshot_path
+
+    @property
+    def documentation_base(self) -> Path:
+        """Get documentation base directory path."""
+        return self.docs_base_path
+
+    @property
     def summaries_dir(self) -> Path:
         """Get summaries directory path."""
-        return self.base_path / "summaries"
+        return self.docs_base_path / "summaries"
 
     def orchestration(self) -> Path:
         """Get orchestration file path."""
@@ -360,23 +392,25 @@ class OutputPaths:
 
     def master_doc(self) -> Path:
         """Get master documentation file path."""
-        return self.base_path / f"{self.date_str}-master-documentation.md"
+        return self.docs_base_path / f"{self.date_str}-master-documentation.md"
 
     def pain_points(self) -> Path:
         """Get pain points file path."""
-        return self.base_path / f"{self.date_str}-pain-points.md"
+        return self.docs_base_path / f"{self.date_str}-pain-points.md"
 
     def recommendations(self) -> Path:
         """Get recommendations file path."""
-        return self.base_path / f"{self.date_str}-recommendations.md"
+        return self.docs_base_path / f"{self.date_str}-recommendations.md"
 
     def readme(self) -> Path:
         """Get README file path."""
-        return self.base_path / "README.md"
+        return self.docs_base_path / "README.md"
 
     def ensure_dirs(self):
         """Create all necessary directories."""
-        self.base_path.mkdir(parents=True, exist_ok=True)
+        self.reference_base.mkdir(parents=True, exist_ok=True)
+        self.code_snapshot_path.mkdir(exist_ok=True)
+        self.docs_base_path.mkdir(exist_ok=True)
         self.summaries_dir.mkdir(exist_ok=True)
 
 
@@ -384,7 +418,11 @@ class OutputPaths:
 paths = OutputPaths("MyProject")
 paths.ensure_dirs()
 
-orchestration_path = paths.orchestration()
+# NEW: Code snapshot location
+code_location = paths.code_snapshot  # ai_docs/reference/myproject/myproject/
+
+# Documentation paths
+orchestration_path = paths.orchestration()  # ai_docs/reference/myproject/documentation/summaries/...
 agent_1_path = paths.agent_summary(1, "architecture")
 master_path = paths.master_doc()
 ```

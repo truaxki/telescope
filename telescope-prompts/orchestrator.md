@@ -152,31 +152,51 @@ When: Multiple phases, shared with agents
 
 ## Agent Coordination
 
-### Parallel Execution
+### Parallel Execution (CRITICAL)
+
+**⚠️ IMPORTANT: Agents must run in SEPARATE, INDEPENDENT conversations/contexts**
 
 **When launching agents:**
 
 ```
-For each active agent:
-  1. Launch agent with parameters:
-     - agent_number
-     - specialization
-     - focus_mode
-     - target_path
-     - project_name
-     - output_path
+DO NOT SIMULATE - ACTUALLY LAUNCH IN PARALLEL:
 
-  2. Agent independently:
-     - Loads agents/agent-[N]-[specialization].md
-     - Loads focus-modes/[mode].md (if not full_stack)
-     - Loads config/output-structure.md
-     - Analyzes codebase
-     - Writes summary to summaries/[DATE]-agent-[N]-[specialization].md
+1. Create orchestration document with all parameters
 
-  3. Signals completion
+2. For each active agent, START A NEW CONVERSATION:
 
-Wait for all agents to complete before Phase 5
+   NEW CONVERSATION 1:
+   - "Load: ai_docs/documentation/[project]/summaries/[DATE]-orchestration.md"
+   - "Load: telescope-prompts/agents/agent-1-architecture.md"
+   - "Load: telescope-prompts/focus-modes/[mode].md"
+   - "Analyze and create summary"
+
+   NEW CONVERSATION 2 (SIMULTANEOUS):
+   - "Load: ai_docs/documentation/[project]/summaries/[DATE]-orchestration.md"
+   - "Load: telescope-prompts/agents/agent-2-backend.md"
+   - "Load: telescope-prompts/focus-modes/[mode].md"
+   - "Analyze and create summary"
+
+   [... MORE CONVERSATIONS FOR OTHER AGENTS ...]
+
+3. Each agent INDEPENDENTLY:
+   - Reads orchestration for context
+   - Loads ONLY their specific prompts
+   - Analyzes based on their specialization
+   - Writes summary to summaries/[DATE]-agent-[N]-[specialization].md
+   - Exits when complete
+
+4. Orchestrator monitors for completion:
+   - Check if all expected summary files exist
+   - Verify file sizes (should be 2,000+ lines each)
+   - Only proceed to synthesis when ALL complete
 ```
+
+**Why This Matters:**
+- Each agent needs ~5,000 lines of context for deep analysis
+- 5 agents × 5,000 lines = 25,000 lines (impossible in one context)
+- Parallel execution = 5× faster analysis
+- True specialization = better quality findings
 
 ### Sequential Steps
 

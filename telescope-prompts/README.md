@@ -43,50 +43,87 @@ telescope-prompts/
 
 ## 🚀 Usage
 
+### ⚠️ CRITICAL: True Parallel Execution Required
+
+**This system is designed for TRUE PARALLEL MULTI-AGENT EXECUTION, not sequential simulation.**
+
+The Telescope system requires an environment where multiple AI agents can run independently and simultaneously. Each agent must:
+- Have its own separate conversation/context window
+- Load only its specific prompt files
+- Execute independently of other agents
+- Write outputs without coordination
+
+**DO NOT attempt to simulate this with a single AI assistant** - it defeats the entire purpose of the modular design and will overflow context windows.
+
 ### For the Orchestrator
+
+The orchestrator should be run by a **coordinator agent** that:
 
 **Step 1: Read the orchestrator file**
 ```
 Read: telescope-prompts/orchestrator.md
 ```
 
-**Step 2: Load configuration as needed**
+**Step 2: Execute Phases 0-3 (Preparation through Orchestration)**
 ```
-Read: telescope-prompts/config/target-types.md      # To understand target
-Read: telescope-prompts/config/focus-modes.md       # To determine focus
-```
-
-**Step 3: Execute steps sequentially**
-```
-Read: telescope-prompts/steps/00-preparation.md
-Execute Phase 0...
-
-Read: telescope-prompts/steps/01-focus-detection.md
-Execute Phase 1...
-
-[Continue through all steps]
+Read: telescope-prompts/steps/00-preparation.md → Execute
+Read: telescope-prompts/steps/01-focus-detection.md → Execute
+Read: telescope-prompts/steps/02-context-scan.md → Execute
+Read: telescope-prompts/steps/03-orchestration.md → Execute
 ```
 
-### For Individual Agents
+**Step 3: Launch PARALLEL agents for Phase 4**
+```
+Create orchestration document with agent assignments
+Then LAUNCH SEPARATE AI AGENTS IN PARALLEL:
+- Agent 1 → New conversation → Load agent-1-architecture.md
+- Agent 2 → New conversation → Load agent-2-backend.md
+- Agent 3 → New conversation → Load agent-3-frontend.md
+- etc.
+```
 
-**Each agent only needs to load:**
+**Step 4: Wait for all agents to complete**
+```
+Monitor: ai_docs/documentation/[project]/summaries/
+Wait for all agent summary files to be created
+```
 
-1. **Their specific agent prompt:**
+**Step 5: Launch synthesis agent (Phase 5)**
+```
+New conversation → Load synthesis-agent.md
+Synthesis reads all agent summaries and creates master documentation
+```
+
+### For Individual Agents (PARALLEL EXECUTION)
+
+**Each agent runs in its OWN SEPARATE CONTEXT/CONVERSATION and only loads:**
+
+1. **The orchestration document (for context):**
    ```
-   Read: telescope-prompts/agents/agent-1-architecture.md
+   Read: ai_docs/documentation/[project]/summaries/[DATE]-orchestration.md
    ```
 
-2. **The focus mode (if applicable):**
+2. **Their specific agent prompt:**
    ```
-   Read: telescope-prompts/focus-modes/adk-architecture.md
+   Read: telescope-prompts/agents/agent-[N]-[specialization].md
    ```
 
-3. **Output structure:**
+3. **The focus mode (if not full-stack):**
+   ```
+   Read: telescope-prompts/focus-modes/[focus-mode].md
+   ```
+
+4. **Output structure:**
    ```
    Read: telescope-prompts/config/output-structure.md
    ```
 
-**Total context:** ~3 files instead of 1 massive template
+**Each agent independently:**
+- Analyzes the codebase based on their specialization
+- Creates their summary document
+- Exits when complete
+
+**Total context per agent:** ~3-4 files (~1,000 lines) vs entire system
 
 ### For Synthesis Agent
 
@@ -104,6 +141,33 @@ Execute Phase 1...
 
 3. **All completed agent summaries** (generated during analysis)
 
+## 📦 What Gets Created
+
+After Telescope analysis, you'll have a complete reference package:
+
+```
+ai_docs/reference/[project-name]/
+│
+├── [project-name]/              # COMPLETE CODE SNAPSHOT
+│   ├── src/                     # Source code preserved
+│   ├── package.json             # Dependencies at analysis time
+│   ├── README.md                # Original project docs
+│   └── [all source files]       # Snapshot for permanent reference
+│
+└── documentation/               # ANALYSIS DOCUMENTATION
+    ├── summaries/               # Individual agent findings
+    ├── master-documentation.md  # Complete synthesis
+    ├── pain-points.md           # Issues identified
+    ├── recommendations.md       # Actionable improvements
+    └── README.md                # Navigation index
+```
+
+**Why Both Code + Documentation?**
+- **Self-Contained** - All context in one place
+- **Version Snapshot** - Documentation references specific code version
+- **Time-Travel** - See exactly what was analyzed
+- **Portable** - Move entire folder as single unit
+
 ## 🔭 Quick Start Commands
 
 ### Basic Usage
@@ -116,34 +180,78 @@ Execute Phase 1...
 "Telescope focus on ADK architecture"
 ```
 
+**Result Structure:**
+```
+ai_docs/reference/my-project/
+├── my-project/              ← Code snapshot
+└── documentation/           ← Analysis docs
+```
+
+## 💡 Execution Environments
+
+### Supported Multi-Agent Environments
+
+Telescope requires environments that support true parallel agent execution:
+
+1. **Multiple AI Assistant Instances**
+   - Open 5-6 separate conversations/windows
+   - Each loads different agent prompts
+   - All analyze simultaneously
+
+2. **API-Based Orchestration**
+   - Script that launches multiple API calls
+   - Each call to a separate agent/thread
+   - Parallel processing via async/await
+
+3. **Agent Platforms**
+   - LangChain with multiple chains
+   - AutoGen with agent swarm
+   - Custom orchestration frameworks
+
+4. **Cloud Functions**
+   - AWS Lambda functions (one per agent)
+   - Google Cloud Functions
+   - Azure Functions
+
+### ❌ What NOT to Do
+
+**DO NOT:**
+- Try to run all agents in a single conversation
+- Have one AI simulate multiple agents sequentially
+- Load all agent prompts into one context
+
+**This will:**
+- Overflow context windows (5 agents × 5,000 lines = 25,000 lines)
+- Defeat the performance benefits
+- Produce inferior analysis (no true specialization)
+
 ## 📋 Step-by-Step Flow
 
-### Orchestrator Flow
+### Orchestrator Flow (Coordinator Agent)
 
 ```
+COORDINATOR AGENT:
 1. Load: orchestrator.md
    ↓
-2. Load: config/target-types.md
+2. Execute Phases 0-3 sequentially:
+   - Phase 0: Preparation (clone/validate target)
+   - Phase 1: Focus Detection (determine mode)
+   - Phase 2: Context Scan (analyze structure)
+   - Phase 3: Create Orchestration Document
    ↓
-3. Load: config/focus-modes.md
+3. LAUNCH PARALLEL AGENTS:
+   - Start Agent 1 in new conversation → agent-1-architecture.md
+   - Start Agent 2 in new conversation → agent-2-backend.md
+   - Start Agent 3 in new conversation → agent-3-frontend.md
+   - Start Agent 4 in new conversation → agent-4-devops.md
+   - Start Agent 5 in new conversation → agent-5-quality.md
    ↓
-4. Load: steps/00-preparation.md → Execute
+4. WAIT for all agents to write their summaries
    ↓
-5. Load: steps/01-focus-detection.md → Execute
+5. LAUNCH SYNTHESIS AGENT:
+   - Start synthesis in new conversation → synthesis-agent.md
    ↓
-6. Load: steps/02-context-scan.md → Execute
-   ↓
-7. Load: steps/03-orchestration.md → Execute
-   ↓
-8. Load: steps/04-agent-execution.md → Launch agents in parallel
-   ↓
-   [Agents execute independently - see below]
-   ↓
-9. Wait for all agents to complete
-   ↓
-10. Load: steps/05-synthesis.md → Execute
-   ↓
-11. Load: steps/06-cleanup.md → Execute
+6. Execute Phase 6: Cleanup
 ```
 
 ### Individual Agent Flow
