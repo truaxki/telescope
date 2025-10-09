@@ -2,6 +2,8 @@
 
 > **Modular prompt system for multi-agent codebase analysis**
 
+> © 2025 AgentLocker.io — Licensed under the MIT License
+
 This folder contains a step-based prompt system that allows agents to load only the specific prompts they need at each phase of the Telescope analysis, rather than ingesting the entire template at once.
 
 ## 📁 Folder Structure
@@ -425,5 +427,10 @@ Each file is self-contained with:
 ---
 
 **Telescope 🔭**
-**Version:** 1.0 (Modular)
-**Created:** 2025-10-07
+**Version:** 2.0 (Modular)
+**Created:** 2025-10-07 Kirk Truax
+
+## Licensing
+
+All prompt templates in `telescope-prompts/` are © 2025 AgentLocker.io and released under the MIT License. See the LICENSE file at the repository root for details.
+

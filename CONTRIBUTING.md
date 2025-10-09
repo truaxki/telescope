@@ -1,400 +1,186 @@
 # Contributing to Telescope 🔭
 
-Thank you for your interest in contributing to Telescope! This document provides guidelines for contributing to make the process smooth and effective.
+Thank you for contributing to Telescope! This guide will help you get started.
 
 ---
 
-## 🎯 Ways to Contribute
+## Ways to Contribute
 
 ### 1. New Focus Modes
 Add specialized analysis patterns for specific domains.
 
-**Example:** E-commerce focus mode
-- File: Create new focus mode in `telescope.md`
-- Agents: Define which agents are activated
-- Emphasis: What aspects to analyze
-- Documentation: Update README with new focus mode
+**Steps:**
+1. Add focus mode to `telescope-prompts/focus-modes/`
+2. Define which agents activate and emphasis areas
+3. Update README focus modes table
+4. Test on real codebase
 
 ### 2. Agent Specializations
 Create new agent types for domain-specific analysis.
 
-**Example:** Security Specialist Agent
-- Define expertise area
-- Create prompt template
-- Document output requirements
-- Add to agent assignment configuration
+**Steps:**
+1. Add agent template to `telescope-prompts/agents/`
+2. Define expertise area and output requirements
+3. Update orchestration configuration
+4. Test and document
 
 ### 3. Template Improvements
 Enhance existing prompts for better analysis quality.
 
-**Areas to improve:**
-- More specific analysis requirements
+**Focus areas:**
+- More specific requirements
 - Better output structure
 - Additional examples
 - Clearer success criteria
 
-### 4. Documentation
-Help others use Telescope effectively.
+### 4. Bug Reports
+Report issues with detailed reproduction steps.
 
-**Documentation needs:**
-- More use case examples
-- Tutorial videos
-- Integration guides
-- Best practices
-
-### 5. Bug Reports
-Report issues, edge cases, or unexpected behavior.
-
-**Good bug reports include:**
-- What you tried to analyze
+**Include:**
 - Command used
-- Expected vs. actual behavior
-- Relevant error messages
+- Expected vs actual behavior
+- Error messages
 - Telescope version
 
 ---
 
-## 🚀 Getting Started
+## Quick Start
 
-### 1. Fork the Repository
+### 1. Fork & Clone
 ```bash
-# Fork on GitHub, then clone your fork
 git clone https://github.com/YOUR_USERNAME/telescope.git
 cd telescope
 ```
 
-### 2. Create Feature Branch
+### 2. Create Branch
 ```bash
 git checkout -b feature/your-feature-name
-
-# Examples:
-# git checkout -b feature/ecommerce-focus-mode
-# git checkout -b feature/security-agent
-# git checkout -b docs/tutorial-videos
+# Examples: feature/ecommerce-focus, docs/tutorial
 ```
 
 ### 3. Make Changes
-Edit `telescope.md` or documentation files.
+Edit files in `telescope-prompts/` or documentation.
 
-### 4. Test Your Changes
-Run Telescope with your changes on real codebases:
+### 4. Test Changes
 ```bash
 # Test on small project first
 "Telescope analyze /path/to/small-project"
 
-# Then test on larger/complex project
+# Test on larger project
 "Telescope analyze /path/to/large-project"
 
-# Test focus mode if applicable
+# Test new focus mode
 "Telescope focus on [your-new-mode]"
 ```
 
-### 5. Commit Changes
+### 5. Commit
 ```bash
-git add .
 git commit -m "feat: add e-commerce focus mode
 
 - Activated agents: 2, 3, 5
-- Focus on checkout flow, payment integration, inventory
-- Includes example output
-"
+- Focus: checkout flow, payment, inventory
+- Includes example output"
 ```
 
-**Commit Message Format:**
-```
-<type>: <subject>
-
-<body>
-
-<footer>
-```
-
-**Types:**
+**Commit types:**
 - `feat`: New feature
 - `fix`: Bug fix
-- `docs`: Documentation changes
+- `docs`: Documentation
 - `refactor`: Code refactoring
-- `test`: Adding tests
+- `test`: Tests
 - `chore`: Maintenance
 
-### 6. Push Changes
-```bash
-git push origin feature/your-feature-name
-```
-
-### 7. Create Pull Request
-- Go to GitHub
-- Click "New Pull Request"
-- Fill out PR template
-- Request review
+### 6. Submit PR
+Push changes and create pull request on GitHub.
 
 ---
 
-## 📋 Contribution Guidelines
+## Prompt Engineering Best Practices
 
-### Code Quality
-- **Clear prompts:** Agent prompts should be specific and actionable
-- **Consistent format:** Follow existing template structure
-- **Examples included:** Provide output examples for new features
-- **Tested:** Verify changes work on real codebases
-
-### Documentation
-- **Update README:** If adding features, update README
-- **Inline comments:** Explain complex logic in prompts
-- **Examples:** Include before/after examples
-- **Use cases:** Document when to use new features
-
-### Pull Request Requirements
-- [ ] Feature branch created
-- [ ] Changes tested on real codebase
-- [ ] Documentation updated
-- [ ] Examples included
-- [ ] Commit messages follow format
-- [ ] No merge conflicts
-
----
-
-## 🎨 Prompt Engineering Best Practices
-
-When contributing new prompts or improving existing ones:
-
-### 1. Be Specific
+### Be Specific
 ```markdown
 # Bad:
 "Analyze the code"
 
 # Good:
 "Analyze ADK agent hierarchies:
-1. Map agent relationships (visual diagram)
-2. Document session state keys (type, structure, usage)
-3. Identify callback patterns (before/after agent/tool/model)
-4. Assess against ADK best practices"
+1. Map agent relationships (visual)
+2. Document state keys (type, structure)
+3. Identify callback patterns
+4. Assess vs best practices"
 ```
 
-### 2. Provide Structure
+### Provide Structure
+Include required sections, output format, success criteria, and examples.
+
+### Include Context
+Give agents their specialization, focus files/directories, analysis depth, and coordination with other agents.
+
+### Define Success
 ```markdown
-# Include:
-- Required sections (numbered list)
-- Output format (markdown, location, naming)
-- Success criteria (what makes it complete)
-- Examples (show expected output format)
+Analysis complete when:
+✅ All assigned files reviewed
+✅ Pain points identified with severity
+✅ Recommendations prioritized
+✅ Examples provided
 ```
 
-### 3. Include Context
-```markdown
-# Give agent context:
-- What specialization they have
-- What files/directories to focus on
-- What depth of analysis required
-- What other agents are doing (avoid overlap)
-```
-
-### 4. Define Success
-```markdown
-# Clear completion criteria:
-- "Analysis complete when:"
-  ✅ All assigned files reviewed
-  ✅ Pain points identified with severity
-  ✅ Recommendations prioritized
-  ✅ Examples provided for key findings
-```
-
-### 5. Show Examples
-```markdown
-# Include example output:
-"Example Pain Point:
-❌ Pain Point 1: Missing State Documentation
-- Problem: [specific issue]
-- Location: [file:line]
-- Impact: [effect on system]
-- Severity: [Critical/High/Medium/Low]
-- Recommendation: [how to fix]"
-```
+### Show Examples
+Include example outputs for pain points, recommendations, and findings.
 
 ---
 
-## 🧪 Testing
+## Testing Checklist
 
-### Manual Testing Checklist
-
-When testing changes:
-
-- [ ] **Small Project** (< 1k lines)
-  - Runs without errors
-  - Output structure correct
-  - Findings relevant
-
-- [ ] **Medium Project** (1k-10k lines)
-  - Completes in reasonable time
-  - All agents finish
-  - Synthesis coherent
-
-- [ ] **Large Project** (> 10k lines)
-  - Doesn't timeout
-  - Findings comprehensive
-  - No duplicate analysis
-
-- [ ] **Different Tech Stacks**
-  - JavaScript/TypeScript
-  - Python
-  - Other languages
-
-- [ ] **Focus Modes**
-  - Each focus mode works
-  - Right agents activated
-  - Appropriate depth
-
-### Test Cases
-
-Create test cases for new features:
-
-```markdown
-# Test Case: E-commerce Focus Mode
-
-Input:
-- Codebase: E-commerce platform (Next.js + Stripe)
-- Command: "Telescope focus on e-commerce"
-
-Expected Output:
-- Agents activated: 2 (Backend), 3 (Frontend), 5 (Quality)
-- Analysis includes:
-  ✓ Checkout flow analysis
-  ✓ Payment integration review
-  ✓ Inventory management patterns
-  ✓ Order processing architecture
-- Pain points identified for e-commerce specific issues
-- Recommendations relevant to online retail
-
-Actual Output:
-[Record what actually happened]
-
-Pass/Fail: [Result]
-```
+- [ ] **Small Project** (< 1k lines) - Runs without errors, correct output
+- [ ] **Medium Project** (1k-10k lines) - Completes in reasonable time
+- [ ] **Large Project** (> 10k lines) - Doesn't timeout, comprehensive
+- [ ] **Different Stacks** - JS/TS, Python, etc.
+- [ ] **Focus Modes** - Each mode activates correct agents
 
 ---
 
-## 📝 Documentation Standards
+## PR Requirements
 
-### README Updates
-
-When adding features, update README sections:
-
-1. **Features** - Add to feature list
-2. **Focus Modes** - Add to reference table
-3. **Examples** - Provide usage example
-4. **Use Cases** - Add relevant use case
-
-### Code Comments
-
-Add comments to complex template sections:
-
-```markdown
-<!-- Template Configuration: ADK Architecture Focus -->
-<!-- This section defines which agents analyze ADK patterns -->
-<!-- Agents 1 & 2 are activated for deep agent hierarchy analysis -->
-```
-
-### CHANGELOG
-
-Update CHANGELOG.md for all changes:
-
-```markdown
-## [Unreleased]
-
-### Added
-- E-commerce focus mode for retail platform analysis
-- Security specialist agent for vulnerability detection
-
-### Changed
-- Improved ADK architecture analysis depth
-- Enhanced session state documentation requirements
-
-### Fixed
-- Fixed agent overlap in database focus mode
-```
+- [ ] Feature branch created
+- [ ] Changes tested on real codebase
+- [ ] Documentation updated (README, focus modes table)
+- [ ] Examples included
+- [ ] Commit messages follow format
+- [ ] No merge conflicts
 
 ---
 
-## 🤝 Community
+## Community
 
-### Getting Help
+- **Questions:** [Discussions](https://github.com/yourusername/telescope/discussions)
+- **Bugs:** [Issues](https://github.com/yourusername/telescope/issues)
 
-- **Questions:** Open a [Discussion](https://github.com/yourusername/telescope/discussions)
-- **Bugs:** Open an [Issue](https://github.com/yourusername/telescope/issues)
-- **Ideas:** Start a [Discussion](https://github.com/yourusername/telescope/discussions)
-
-### Code of Conduct
-
+**Code of Conduct:**
 - Be respectful and inclusive
 - Provide constructive feedback
-- Focus on improving Telescope
-- Help others learn prompt engineering
 - Share knowledge and examples
 
 ---
 
-## 🎓 Learning Resources
+## FAQ
 
-### Prompt Engineering
-- [Anthropic Prompt Engineering Guide](https://docs.anthropic.com/claude/docs)
-- [OpenAI Best Practices](https://platform.openai.com/docs/guides/prompt-engineering)
-- [Google ADK Documentation](https://cloud.google.com/vertex-ai/docs/agent-engine)
+**Q: How do I add a new focus mode?**
+1. Create file in `telescope-prompts/focus-modes/`
+2. Define agent activation and emphasis
+3. Update README focus modes table
+4. Test on real codebase
 
-### Multi-Agent Systems
-- Study `telescope.md` orchestration patterns
-- Review agent specialization examples
-- Analyze synthesis agent prompts
+**Q: Can I add more agents?**
+Yes! Add to `telescope-prompts/agents/` and update orchestration.
 
-### Template Design
-- Examine existing focus modes
-- Compare agent prompt variations
-- Study output structure requirements
-
----
-
-## 🏆 Recognition
-
-Contributors will be:
-- Listed in CONTRIBUTORS.md
-- Mentioned in release notes
-- Recognized in README (significant contributions)
-
----
-
-## ❓ FAQ
-
-### Q: How do I add a new focus mode?
-1. Edit `telescope.md` Section 1.2 (Focus Mode Configuration)
-2. Define which agents are activated
-3. Specify analysis emphasis areas
-4. Create example output
-5. Update README focus modes table
-6. Test on real codebase
-
-### Q: Can I add more than 5 agents?
-Yes! You can add specialized agents:
-1. Define agent in Section 1.4 (Agent Specialization)
-2. Create agent prompt template in Section 2.5
-3. Add to orchestration document template
-4. Update README
-
-### Q: How do I test changes?
-1. Copy modified `telescope.md` to test project
-2. Run Telescope with your changes
-3. Verify outputs in `ai_docs/documentation/`
-4. Check quality of analysis
-5. Iterate on prompts
-
-### Q: What makes a good prompt?
+**Q: What makes a good prompt?**
 - Specific requirements
 - Clear structure
 - Success criteria
 - Examples included
 - Context provided
-- Testable outputs
 
 ---
 
-**Thank you for contributing to Telescope! 🔭**
-
-Together we're making codebase analysis better through the power of prompt templates.
+**Thank you for contributing to Telescope!** 🔭

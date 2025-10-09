@@ -3,7 +3,6 @@
 # Analysis outputs (users generate these locally)
 ai_docs/
 
-
 # Temp directories from remote clones
 /tmp/telescope-*/
 

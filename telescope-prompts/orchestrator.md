@@ -2,6 +2,8 @@
 
 > **Main coordination logic for multi-agent codebase analysis**
 
+> © 2025 AgentLocker.io — Licensed under the MIT License
+
 ## Purpose
 
 This is the entry point for Telescope analysis. The orchestrator:
